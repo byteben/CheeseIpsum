@@ -199,7 +199,7 @@ function getSelectedFormat() {
 
 function getSelectedCount() {
   const slider = document.getElementById('countSlider');
-  return slider ? parseInt(slider.value, 10) : 25;
+  return slider ? parseInt(slider.value, 10) : 6;
 }
 
 function updateSliderUI() {
