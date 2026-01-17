@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
             generate();
         });
     }
-    
+
     updateSliderUI();
     updateCountOptionsVisibility();
     generate();
