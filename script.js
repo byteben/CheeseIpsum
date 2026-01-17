@@ -263,7 +263,7 @@ function generateParagraphs(count) {
 
 // Main generate function
 function generate() {
-    const format = document.getElementById('format').value;
+    const format = getSelectedFormat();
     const count = getSelectedCount();
     const outputBox = document.getElementById('output');
 
@@ -302,6 +302,22 @@ function generate() {
     }
 
     outputBox.textContent = result;
+}
+
+// Read selected mode from radio group
+function getSelectedFormat() {
+    const modes = document.getElementsByName('modeOption');
+    for (const m of modes) if (m.checked) return m.value;
+    return 'para-latin';
+}
+
+// read selected radio count (global helper)
+function getSelectedCount() {
+    const radios = document.getElementsByName('countOption');
+    for (const r of radios) {
+        if (r.checked) return parseInt(r.value, 10);
+    }
+    return 10;
 }
 
 // Generate a random pop song built from popLines. Picks `linesCount` unique lines.
@@ -364,27 +380,7 @@ function showToast() {
     }, 2000);
 }
 
-// Update count input when format changes
-function updateCountLabel() {
-    const format = document.getElementById('format').value;
-    const countInput = document.getElementById('count');
-    
-    switch(format) {
-        case 'words':
-            countInput.max = 500;
-            countInput.value = Math.min(countInput.value, 500);
-            break;
-        case 'sentences':
-            countInput.max = 50;
-            countInput.value = Math.min(countInput.value, 50);
-            break;
-        case 'paragraphs':
-        default:
-            countInput.max = 100;
-            countInput.value = Math.min(countInput.value, 100);
-            break;
-    }
-}
+// (removed old updateCountLabel - we now use radio controls)
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
@@ -393,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('format').addEventListener('change', updateCountLabel);
     // ensure generate button label reflects selected format
     function updateGenerateButtonLabel() {
-        const format = document.getElementById('format').value;
+        const format = getSelectedFormat();
         const gen = document.getElementById('generate');
         switch (format) {
             case 'para-latin': gen.textContent = 'Generate Paragraphs (Latin)'; break;
@@ -406,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // show/hide count options depending on format
     function updateCountOptionsVisibility() {
-        const format = document.getElementById('format').value;
+        const format = getSelectedFormat();
         const countOpts = document.getElementById('countOptions');
         if (!countOpts) return;
         // For pop-song, grey out (disable) the radio options rather than hiding them
@@ -426,11 +422,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return 20;
     }
 
-    // wire format change to update UI
-    document.getElementById('format').addEventListener('change', () => {
-        updateGenerateButtonLabel();
-        updateCountOptionsVisibility();
-    });
+    // wire mode radio changes to update UI
+    const modeRadios = document.getElementsByName('modeOption');
+    for (const r of modeRadios) {
+        r.addEventListener('change', () => {
+            updateGenerateButtonLabel();
+            updateCountOptionsVisibility();
+        });
+    }
 
     // initialize labels/visibility
     updateGenerateButtonLabel();
