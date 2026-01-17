@@ -16,9 +16,22 @@
     }
   },
   "globalHeaders": {
-    "content-security-policy": "default-src 'self' 'unsafe-inline'",
-    "cache-control": "public, max-age=31536000, immutable"
+    "content-security-policy": "default-src 'self' 'unsafe-inline'"
   },
+  "routes": [
+    {
+      "route": "/*.{css,js}",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "route": "/*.html",
+      "headers": {
+        "cache-control": "public, max-age=3600"
+      }
+    }
+  ],
   "mimeTypes": {
     ".json": "application/json",
     ".js": "text/javascript",
