@@ -137,16 +137,26 @@ async function copyToClipboard() {
         await navigator.clipboard.writeText(text);
         showToast();
     } catch (err) {
-        // Fallback for older browsers
+        // Fallback for older browsers or when clipboard API is not available
         const textarea = document.createElement('textarea');
         textarea.value = text;
         textarea.style.position = 'fixed';
         textarea.style.opacity = '0';
+        textarea.style.left = '-9999px';
         document.body.appendChild(textarea);
         textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        showToast();
+        
+        try {
+            // Try the deprecated method as last resort
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showToast();
+            }
+        } catch (fallbackErr) {
+            console.error('Unable to copy text:', fallbackErr);
+        } finally {
+            document.body.removeChild(textarea);
+        }
     }
 }
 
