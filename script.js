@@ -56,6 +56,40 @@ const cheeseWords = {
         'duis aute irure dolor in reprehenderit',
         'in voluptate velit esse cillum dolore eu fugiat nulla pariatur'
     ]
+    ,
+    // Pure pop cheese lines (30 unique rhyming lines for assembling songs)
+    popLines: [
+        "We got the cheddar on repeat, buttery beats beneath our feet",
+        "Melt it slow, then take a bite, mozzarella moonlights in the night",
+        "Dancing on a fondue floor, spin the wheel and dip once more",
+        "Brie and beats and neon glow, groove until the cheeses flow",
+        "Parmesan falling like a shower, sprinkle love every single hour",
+        "Cheddar kisses, creamy swirls, you melt my heart, you melt my world",
+        "Gouda grooves and funky bass, hold me close in your warm embrace",
+        "Feta flickers, candlelight, slow dance with me through the night",
+        "Smothered in a melty trance, cheddar leads the midnight dance",
+        "Ricotta rhythm, heartbeats sync, pass the plate and share a wink",
+        "Swiss holes beating like my heart, every chorus a new start",
+        "Havarti hums a mellow tune, under the soft and silver moon",
+        "Monterey mood in hazy haze, turn it up and lose the days",
+        "Colby cadence, sugar sweet, finger-lickin' lovers meet",
+        "Pepper jack with spicy rhyme, dance with me one more time",
+        "Creamy whispers in the air, melt my worries, show you care",
+        "Blue cheese blue in velvet skies, sing the chorus, close your eyes",
+        "Grana gleams like city lights, serenade our summer nights",
+        "Stilton sway and slow guitar, reach the chorus, raise the bar",
+        "Mascarpone in satin coats, whisper secrets, trade our notes",
+        "Paneer pulse and barefoot stomp, heartbeat thumps and dancers romp",
+        "Queso quiver, spotlight spin, let the crazy jam begin",
+        "Emmental echoes through the hall, lovers gather, one and all",
+        "Fontina fire, burning bright, keep me warm until the light",
+        "Provolone promises on repeat, lay me down and play the beat",
+        "Muenster moves the evening slow, take a breath and let it go",
+        "Gorgonzola lullaby, hush the crowd and dim the sky",
+        "Tomato tang and cheesy rhyme, squeeze the moment out of time",
+        "Wrapped in wax, a secret song, cheesy chorus all night long",
+        "Dawn will come but not tonight, we'll keep dancing in the light"
+    ]
 };
 
 // Helper function to get random element from array
@@ -99,7 +133,7 @@ function getToken(type, includeLatin) {
 
     // For other types, occasionally return a Latin word when enabled
     // for adjectives/cheeses etc, use Latin occasionally but with a higher rate
-    if (includeLatin && Math.random() < 0.4) {
+    if (includeLatin && Math.random() < 0.6) {
         return random(cheeseWords.latin);
     }
 
@@ -123,25 +157,38 @@ function generateSentence(includeLatin) {
 }
 
 // Generate a paragraph with random number of sentences
-function generateParagraph() {
+function generateParagraph(includeLatin) {
     const sentenceCount = Math.floor(Math.random() * 4) + 3; // 3-6 sentences
     const sentences = [];
-    
-    // Preserve existing behavior but allow optional Latin mixing
-    const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
-
     for (let i = 0; i < sentenceCount; i++) {
         sentences.push(generateSentence(includeLatin));
     }
-    
+
+    // If includeLatin is true but randomness produced no Latin, ensure visibility
+    if (includeLatin) {
+        const latinIndicators = [...cheeseWords.latin, ...cheeseWords.latinVerbs, ...cheeseWords.latinConnectors];
+        const hasLatin = sentences.some(s => latinIndicators.some(token => s.toLowerCase().includes(token)) || cheeseWords.latinPhrases.some(p => s.toLowerCase().includes(p.split(' ')[0])));
+        if (!hasLatin) {
+            sentences[sentences.length - 1] = generateLatinSentence();
+        }
+    }
+
     return sentences.join(' ');
 }
 
+// Generate a clear Latin sentence (used when probabilistic mixing produced none)
+function generateLatinSentence() {
+    const phrase = random(cheeseWords.latinPhrases);
+    return capitalize(phrase) + '.';
+}
+
+// Global flag used by paragraph generation to determine Latin mixing
+let currentIncludeLatin = true;
+
 // Generate words
-function generateWords(count) {
+function generateWords(count, includeLatin) {
     const words = [];
     for (let i = 0; i < count; i++) {
-        const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
         const wordType = Math.random();
         if (wordType < 0.5) {
             words.push(getToken('cheeses', includeLatin));
@@ -155,9 +202,8 @@ function generateWords(count) {
 }
 
 // Generate sentences
-function generateSentences(count) {
+function generateSentences(count, includeLatin) {
     const sentences = [];
-    const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
     for (let i = 0; i < count; i++) {
         sentences.push(generateSentence(includeLatin));
     }
@@ -168,7 +214,9 @@ function generateSentences(count) {
 function generateParagraphs(count) {
     const paragraphs = [];
     for (let i = 0; i < count; i++) {
-        paragraphs.push(generateParagraph());
+        // determine whether this mode should include Latin -- default to true
+        // caller will set currentIncludeLatin before calling this function
+        paragraphs.push(generateParagraph(currentIncludeLatin));
     }
     return paragraphs.join('\n\n');
 }
@@ -178,24 +226,58 @@ function generate() {
     const format = document.getElementById('format').value;
     const count = parseInt(document.getElementById('count').value);
     const outputBox = document.getElementById('output');
-    const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
-    
+    const popSongVal = document.getElementById('popSong') ? document.getElementById('popSong').value : 'none';
+
+    // determine mode
+    // para-latin -> paragraphs with ~60% Latin
+    // para-cheese -> paragraphs pure cheese (no Latin)
+    // sentences-cheese -> sentences pure cheese (no Latin)
     let result = '';
-    
+    currentIncludeLatin = (format === 'para-latin');
+
+    // pop song button handled separately
+
     switch(format) {
-        case 'words':
-            result = generateWords(count);
+        case 'para-latin':
+            result = generateParagraphs(count);
             break;
-        case 'sentences':
-            result = generateSentences(count);
+        case 'para-cheese':
+            // paragraphs without Latin
+            result = (() => {
+                const prev = currentIncludeLatin;
+                currentIncludeLatin = false;
+                const r = generateParagraphs(count);
+                currentIncludeLatin = prev;
+                return r;
+            })();
             break;
-        case 'paragraphs':
+        case 'sentences-cheese':
+            result = generateSentences(count, false);
+            break;
         default:
             result = generateParagraphs(count);
             break;
     }
-    
+
     outputBox.textContent = result;
+}
+
+// Generate a random pop song built from popLines. Picks `linesCount` unique lines.
+function generatePopSong(linesCount = 20) {
+    // shuffle copy of popLines
+    const pool = cheeseWords.popLines.slice();
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+
+    const chosen = pool.slice(0, Math.min(linesCount, pool.length));
+    // group into 4-line stanzas
+    const stanzas = [];
+    for (let i = 0; i < chosen.length; i += 4) {
+        stanzas.push(chosen.slice(i, i + 4).join('\n'));
+    }
+    return stanzas.join('\n\n');
 }
 
 // Copy to clipboard function
@@ -272,6 +354,14 @@ document.addEventListener('DOMContentLoaded', () => {
         includeLatinEl.addEventListener('change', () => {
             // regenerate immediately when the user toggles Latin inclusion
             generate();
+        });
+    }
+    // wire the pop song generator button
+    const popBtn = document.getElementById('generatePopSong');
+    if (popBtn) {
+        popBtn.addEventListener('click', () => {
+            const outputBox = document.getElementById('output');
+            outputBox.textContent = generatePopSong(20); // 20 lines (~5 stanzas)
         });
     }
     
