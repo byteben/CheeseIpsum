@@ -294,7 +294,7 @@ function generate() {
             result = generateSentences(count, false);
             break;
         case 'pop-song':
-            result = generatePopSong(20);
+            result = generatePopSong(50);
             break;
         default:
             result = generateParagraphs(count);
@@ -305,7 +305,7 @@ function generate() {
 }
 
 // Generate a random pop song built from popLines. Picks `linesCount` unique lines.
-function generatePopSong(linesCount = 20) {
+function generatePopSong(linesCount = 50) {
     // shuffle copy of popLines
     const pool = cheeseWords.popLines.slice();
     for (let i = pool.length - 1; i > 0; i--) {
@@ -409,8 +409,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const format = document.getElementById('format').value;
         const countOpts = document.getElementById('countOptions');
         if (!countOpts) return;
-        if (format === 'pop-song') countOpts.style.display = 'none';
-        else countOpts.style.display = '';
+        // For pop-song, grey out (disable) the radio options rather than hiding them
+        const radios = document.getElementsByName('countOption');
+        const disabled = (format === 'pop-song');
+        for (const r of radios) r.disabled = disabled;
+        countOpts.style.opacity = disabled ? '0.5' : '';
+        countOpts.style.pointerEvents = disabled ? 'none' : '';
     }
 
     // read selected radio count
