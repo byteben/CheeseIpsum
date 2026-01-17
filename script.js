@@ -325,12 +325,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const modeRadios = document.getElementsByName('modeOption');
   for (const r of modeRadios) {
     r.addEventListener('change', () => {
+      updateGenerateButtonLabel();
       updateCountOptionsVisibility();
       generate();
     });
   }
 
-  // Slider changes
+  // Slider changes (live label + generate on release)
   if (slider) {
     slider.addEventListener('input', updateSliderUI);
     slider.addEventListener('change', () => {
@@ -339,6 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  updateGenerateButtonLabel();
   updateSliderUI();
   updateCountOptionsVisibility();
   generate();
