@@ -31,6 +31,15 @@ const cheeseWords = {
         'and', 'with', 'alongside', 'featuring', 'including', 'combined with',
         'topped with', 'garnished with', 'served with', 'paired with'
     ]
+    ,
+    // Optional Latin words / connectors to sprinkle in when the checkbox is enabled
+    latin: [
+        'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing',
+        'elit', 'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et'
+    ],
+    latinConnectors: [
+        'et', 'cum', 'etiam', 'quoque', 'sed', 'autem', 'nam', 'si'
+    ]
 };
 
 // Helper function to get random element from array
@@ -43,16 +52,35 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+// Helper to pick a token from cheeseWords with optional Latin inclusion
+function getToken(type, includeLatin) {
+    // type: 'cheeses' | 'adjectives' | 'verbs' | 'phrases' | 'connectors'
+    if (type === 'connectors') {
+        if (includeLatin && Math.random() < 0.5) {
+            return random(cheeseWords.latinConnectors);
+        }
+        return random(cheeseWords.connectors);
+    }
+
+    // For other types, occasionally return a Latin word when enabled
+    if (includeLatin && Math.random() < 0.25) {
+        return random(cheeseWords.latin);
+    }
+
+    // Fallback to the requested type
+    return random(cheeseWords[type]);
+}
+
 // Generate a cheese-themed sentence
-function generateSentence() {
+function generateSentence(includeLatin) {
     const templates = [
-        () => `${capitalize(random(cheeseWords.adjectives))} ${random(cheeseWords.cheeses)} ${random(cheeseWords.verbs)} ${random(cheeseWords.phrases)}.`,
-        () => `The ${random(cheeseWords.adjectives)} ${random(cheeseWords.cheeses)} ${random(cheeseWords.verbs)} beautifully ${random(cheeseWords.phrases)}.`,
-        () => `${capitalize(random(cheeseWords.cheeses))} is ${random(cheeseWords.adjectives)} ${random(cheeseWords.connectors)} ${random(cheeseWords.cheeses)}.`,
-        () => `${capitalize(random(cheeseWords.adjectives))} and ${random(cheeseWords.adjectives)} ${random(cheeseWords.cheeses)} ${random(cheeseWords.verbs)} ${random(cheeseWords.phrases)}.`,
-        () => `${capitalize(random(cheeseWords.cheeses))} ${random(cheeseWords.connectors)} ${random(cheeseWords.cheeses)} creates a ${random(cheeseWords.adjectives)} combination.`,
-        () => `Experience the ${random(cheeseWords.adjectives)} texture of ${random(cheeseWords.cheeses)} ${random(cheeseWords.phrases)}.`,
-        () => `This ${random(cheeseWords.adjectives)} ${random(cheeseWords.cheeses)} ${random(cheeseWords.verbs)} wonderfully ${random(cheeseWords.phrases)}.`
+        () => `${capitalize(getToken('adjectives', includeLatin))} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} ${getToken('phrases', includeLatin)}.`,
+        () => `The ${getToken('adjectives', includeLatin)} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} beautifully ${getToken('phrases', includeLatin)}.`,
+        () => `${capitalize(getToken('cheeses', includeLatin))} is ${getToken('adjectives', includeLatin)} ${getToken('connectors', includeLatin)} ${getToken('cheeses', includeLatin)}.`,
+        () => `${capitalize(getToken('adjectives', includeLatin))} and ${getToken('adjectives', includeLatin)} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} ${getToken('phrases', includeLatin)}.`,
+        () => `${capitalize(getToken('cheeses', includeLatin))} ${getToken('connectors', includeLatin)} ${getToken('cheeses', includeLatin)} creates a ${getToken('adjectives', includeLatin)} combination.`,
+        () => `Experience the ${getToken('adjectives', includeLatin)} texture of ${getToken('cheeses', includeLatin)} ${getToken('phrases', includeLatin)}.`,
+        () => `This ${getToken('adjectives', includeLatin)} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} wonderfully ${getToken('phrases', includeLatin)}.`
     ];
     
     return random(templates)();
@@ -63,8 +91,11 @@ function generateParagraph() {
     const sentenceCount = Math.floor(Math.random() * 4) + 3; // 3-6 sentences
     const sentences = [];
     
+    // Preserve existing behavior but allow optional Latin mixing
+    const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
+
     for (let i = 0; i < sentenceCount; i++) {
-        sentences.push(generateSentence());
+        sentences.push(generateSentence(includeLatin));
     }
     
     return sentences.join(' ');
@@ -74,13 +105,14 @@ function generateParagraph() {
 function generateWords(count) {
     const words = [];
     for (let i = 0; i < count; i++) {
+        const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
         const wordType = Math.random();
         if (wordType < 0.5) {
-            words.push(random(cheeseWords.cheeses));
+            words.push(getToken('cheeses', includeLatin));
         } else if (wordType < 0.8) {
-            words.push(random(cheeseWords.adjectives));
+            words.push(getToken('adjectives', includeLatin));
         } else {
-            words.push(random(cheeseWords.verbs));
+            words.push(getToken('verbs', includeLatin));
         }
     }
     return words.join(' ');
@@ -89,8 +121,9 @@ function generateWords(count) {
 // Generate sentences
 function generateSentences(count) {
     const sentences = [];
+    const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
     for (let i = 0; i < count; i++) {
-        sentences.push(generateSentence());
+        sentences.push(generateSentence(includeLatin));
     }
     return sentences.join(' ');
 }
@@ -109,6 +142,7 @@ function generate() {
     const format = document.getElementById('format').value;
     const count = parseInt(document.getElementById('count').value);
     const outputBox = document.getElementById('output');
+    const includeLatin = document.getElementById('includeLatin') ? document.getElementById('includeLatin').checked : true;
     
     let result = '';
     
@@ -197,6 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generate').addEventListener('click', generate);
     document.getElementById('copy').addEventListener('click', copyToClipboard);
     document.getElementById('format').addEventListener('change', updateCountLabel);
+    const includeLatinEl = document.getElementById('includeLatin');
+    if (includeLatinEl) {
+        includeLatinEl.addEventListener('change', () => {
+            // regenerate immediately when the user toggles Latin inclusion
+            generate();
+        });
+    }
     
     // Generate initial content
     generate();
