@@ -262,12 +262,19 @@
 
     <script>
         let cheeseWords = null;
+        let dataLoaded = false;
 
         // Load cheese words from JSON
         fetch('cheese-words.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 cheeseWords = data;
+                dataLoaded = true;
             })
             .catch(error => {
                 console.error('Error loading cheese words:', error);
@@ -280,6 +287,7 @@
                     connectors: ['and', 'with', 'through', 'among', 'between'],
                     sentence_starters: ['The', 'A', 'Every', 'Each', 'Some']
                 };
+                dataLoaded = true;
             });
 
         function getRandomElement(array) {
@@ -385,8 +393,9 @@
         function copyToClipboard() {
             const output = document.getElementById('output');
             const text = output.innerText;
+            const hasPlaceholder = output.querySelector('.placeholder');
 
-            if (text && !text.includes('Click "Generate Cheese"')) {
+            if (text && !hasPlaceholder) {
                 navigator.clipboard.writeText(text).then(() => {
                     const btn = document.querySelector('.copy-btn');
                     btn.textContent = 'Copied! ✓';
@@ -412,11 +421,15 @@
 
         // Generate initial content on load
         window.addEventListener('load', function() {
-            setTimeout(() => {
-                if (cheeseWords) {
+            // Wait for data to load before generating
+            const checkDataAndGenerate = () => {
+                if (dataLoaded && cheeseWords) {
                     generateCheese();
+                } else {
+                    setTimeout(checkDataAndGenerate, 100);
                 }
-            }, 500);
+            };
+            checkDataAndGenerate();
         });
     </script>
 </body>
