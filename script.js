@@ -103,74 +103,114 @@ function capitalize(str) {
 }
 
 // Helper to pick a token from cheeseWords with optional Latin inclusion
-function getToken(type, includeLatin) {
+function getToken(type, includeLatin, forceLatin = false) {
     // type: 'cheeses' | 'adjectives' | 'verbs' | 'phrases' | 'connectors'
-    if (type === 'connectors') {
-        // make Latin connectors reasonably visible when enabled
-        if (includeLatin && Math.random() < 0.7) {
-            return random(cheeseWords.latinConnectors);
-        }
-        return random(cheeseWords.connectors);
-    }
-
-    // For verbs, prefer Latin verbs when enabled (higher visibility)
-    if (type === 'verbs') {
-        // prefer Latin verbs more aggressively so lorem verbs show up
-        if (includeLatin && Math.random() < 0.8) {
-            return random(cheeseWords.latinVerbs);
-        }
-        return random(cheeseWords.verbs);
-    }
-
-    // For phrases, allow full Latin phrases when enabled
-    if (type === 'phrases') {
-        // make Latin phrases highly likely when enabled so they're obvious
-        if (includeLatin && Math.random() < 0.9) {
-            return random(cheeseWords.latinPhrases);
-        }
-        return random(cheeseWords.phrases);
-    }
-
-    // For other types, occasionally return a Latin word when enabled
-    // for adjectives/cheeses etc, use Latin occasionally but with a higher rate
-    if (includeLatin && Math.random() < 0.6) {
+    // If forceLatin is true we deterministically return an appropriate Latin token.
+    if (forceLatin) {
+        if (type === 'phrases') return random(cheeseWords.latinPhrases);
+        if (type === 'verbs') return random(cheeseWords.latinVerbs);
+        if (type === 'connectors') return random(cheeseWords.latinConnectors);
+        // adjectives / cheeses fall back to individual latin words
         return random(cheeseWords.latin);
     }
 
-    // Fallback to the requested type
+    // Probabilistic mixing when includeLatin is enabled
+    if (type === 'connectors') {
+        if (includeLatin && Math.random() < 0.7) return random(cheeseWords.latinConnectors);
+        return random(cheeseWords.connectors);
+    }
+
+    if (type === 'verbs') {
+        if (includeLatin && Math.random() < 0.8) return random(cheeseWords.latinVerbs);
+        return random(cheeseWords.verbs);
+    }
+
+    if (type === 'phrases') {
+        if (includeLatin && Math.random() < 0.9) return random(cheeseWords.latinPhrases);
+        return random(cheeseWords.phrases);
+    }
+
+    if (includeLatin && Math.random() < 0.6) return random(cheeseWords.latin);
+
     return random(cheeseWords[type]);
 }
 
 // Generate a cheese-themed sentence
 function generateSentence(includeLatin) {
+    // Backwards-compatible simple sentence generator used for non-paragraph modes.
     const templates = [
-        () => `${capitalize(getToken('adjectives', includeLatin))} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} ${getToken('phrases', includeLatin)}.`,
-        () => `The ${getToken('adjectives', includeLatin)} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} beautifully ${getToken('phrases', includeLatin)}.`,
-        () => `${capitalize(getToken('cheeses', includeLatin))} is ${getToken('adjectives', includeLatin)} ${getToken('connectors', includeLatin)} ${getToken('cheeses', includeLatin)}.`,
-        () => `${capitalize(getToken('adjectives', includeLatin))} and ${getToken('adjectives', includeLatin)} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} ${getToken('phrases', includeLatin)}.`,
-        () => `${capitalize(getToken('cheeses', includeLatin))} ${getToken('connectors', includeLatin)} ${getToken('cheeses', includeLatin)} creates a ${getToken('adjectives', includeLatin)} combination.`,
-        () => `Experience the ${getToken('adjectives', includeLatin)} texture of ${getToken('cheeses', includeLatin)} ${getToken('phrases', includeLatin)}.`,
-        () => `This ${getToken('adjectives', includeLatin)} ${getToken('cheeses', includeLatin)} ${getToken('verbs', includeLatin)} wonderfully ${getToken('phrases', includeLatin)}.`
+        ['adjectives','cheeses','verbs','phrases'],
+        ['The','adjectives','cheeses','verbs','beautifully','phrases'],
+        ['cheeses','is','adjectives','connectors','cheeses'],
+        ['adjectives','and','adjectives','cheeses','verbs','phrases'],
+        ['cheeses','connectors','cheeses','creates a','adjectives','combination'],
+        ['Experience the','adjectives','texture of','cheeses','phrases'],
+        ['This','adjectives','cheeses','verbs','wonderfully','phrases']
     ];
-    
-    return random(templates)();
+
+    const t = random(templates);
+    let words = [];
+    for (const token of t) {
+        if (['adjectives','cheeses','verbs','phrases','connectors'].includes(token)) {
+            words.push(getToken(token, includeLatin));
+        } else {
+            words.push(token);
+        }
+    }
+
+    // Capitalize first token if necessary and join
+    if (words.length > 0) words[0] = capitalize(words[0]);
+    return words.join(' ') + '.';
 }
 
 // Generate a paragraph with random number of sentences
 function generateParagraph(includeLatin) {
     const sentenceCount = Math.floor(Math.random() * 4) + 3; // 3-6 sentences
-    const sentences = [];
-    for (let i = 0; i < sentenceCount; i++) {
-        sentences.push(generateSentence(includeLatin));
+
+    // templates mirroring generateSentence token sets
+    const templates = [
+        ['adjectives','cheeses','verbs','phrases'],
+        ['The','adjectives','cheeses','verbs','beautifully','phrases'],
+        ['cheeses','is','adjectives','connectors','cheeses'],
+        ['adjectives','and','adjectives','cheeses','verbs','phrases'],
+        ['cheeses','connectors','cheeses','creates a','adjectives','combination'],
+        ['Experience the','adjectives','texture of','cheeses','phrases'],
+        ['This','adjectives','cheeses','verbs','wonderfully','phrases']
+    ];
+
+    // pick sentence templates
+    const chosenTemplates = [];
+    for (let i = 0; i < sentenceCount; i++) chosenTemplates.push(random(templates));
+
+    // count variable token slots to enforce ~60% Latin
+    const variableTokenTypes = new Set(['adjectives','cheeses','verbs','phrases','connectors']);
+    let totalSlots = 0;
+    for (const t of chosenTemplates) for (const token of t) if (variableTokenTypes.has(token)) totalSlots++;
+
+    const requiredLatin = includeLatin ? Math.round(totalSlots * 0.6) : 0;
+
+    // pick unique slot indices to force Latin
+    const forced = new Set();
+    while (forced.size < requiredLatin) {
+        forced.add(Math.floor(Math.random() * totalSlots));
     }
 
-    // If includeLatin is true but randomness produced no Latin, ensure visibility
-    if (includeLatin) {
-        const latinIndicators = [...cheeseWords.latin, ...cheeseWords.latinVerbs, ...cheeseWords.latinConnectors];
-        const hasLatin = sentences.some(s => latinIndicators.some(token => s.toLowerCase().includes(token)) || cheeseWords.latinPhrases.some(p => s.toLowerCase().includes(p.split(' ')[0])));
-        if (!hasLatin) {
-            sentences[sentences.length - 1] = generateLatinSentence();
+    // build sentences using forced Latin slots where selected
+    const sentences = [];
+    let slotIndex = 0;
+    for (const t of chosenTemplates) {
+        const parts = [];
+        for (const token of t) {
+            if (variableTokenTypes.has(token)) {
+                const forceThis = forced.has(slotIndex);
+                parts.push(getToken(token, includeLatin, forceThis));
+                slotIndex++;
+            } else {
+                parts.push(token);
+            }
         }
+        if (parts.length > 0) parts[0] = capitalize(parts[0]);
+        sentences.push(parts.join(' ') + '.');
     }
 
     return sentences.join(' ');
