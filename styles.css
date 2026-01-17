@@ -62,22 +62,78 @@ main {
 }
 
 .controls {
-    background: var(--surface);
-    border-radius: 1rem;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 30px var(--shadow);
+  background: var(--surface);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;              /* ✅ was grid */
+  flex-direction: column;     /* ✅ stack */
+  gap: 1.25rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px var(--shadow);
 }
 
+/* Keep each section tidy */
 .control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
+
+/* Only style the little section label, not every <label> */
+.control-title {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Radio labels should look normal */
+.option label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Make options a neat list */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Slider row */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 520px;
+}
+
+.slider-row input[type="range"] {
+  width: 100%;
+}
+
+.slider-value {
+  min-width: 3ch;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* Button should span full width */
+.btn-primary {
+  width: 100%;
+}
+
 
 label {
     font-weight: 600;
@@ -250,40 +306,6 @@ footer {
         transform: translateY(0);
     }
 }
-
-.control-group {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 12px;
-  align-items: start;
-  margin-bottom: 16px;
-}
-
-.control-group label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 16px;
-  white-space: nowrap;
-}
-
-.slider-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: 520px;
-}
-
-.slider-row input[type="range"] {
-  width: 100%;
-}
-
-.slider-value {
-  min-width: 3ch;
-  font-weight: 700;
-  opacity: 0.9;
-}
-
 
 @media (max-width: 768px) {
     .container {
