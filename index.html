@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CheeseIpsum - A cheese-themed Lorem Ipsum generator with a modern interface">
+    <title>CheeseIpsum - Cheesy Lorem Ipsum Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧀 CheeseIpsum</h1>
+            <p class="subtitle">The cheesiest placeholder text generator</p>
+        </header>
+
+        <main>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="paragraphs">Paragraphs:</label>
+                    <input type="number" id="paragraphs" min="1" max="10" value="3">
+                </div>
+                
+                <div class="control-group">
+                    <label for="format">Format:</label>
+                    <select id="format">
+                        <option value="paragraphs">Paragraphs</option>
+                        <option value="words">Words</option>
+                        <option value="sentences">Sentences</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="count">Count:</label>
+                    <input type="number" id="count" min="1" max="100" value="3">
+                </div>
+                
+                <button id="generate" class="btn btn-primary">Generate Cheese!</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <h2>Generated Text</h2>
+                    <button id="copy" class="btn btn-secondary">Copy to Clipboard</button>
+                </div>
+                <div id="output" class="output-box">
+                    Click "Generate Cheese!" to create your cheesy text...
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Made with 🧀 for all your placeholder text needs</p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
