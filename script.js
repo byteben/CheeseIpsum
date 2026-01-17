@@ -264,9 +264,8 @@ function generateParagraphs(count) {
 // Main generate function
 function generate() {
     const format = document.getElementById('format').value;
-    const count = parseInt(document.getElementById('count').value);
+    const count = getSelectedCount();
     const outputBox = document.getElementById('output');
-    const popSongVal = document.getElementById('popSong') ? document.getElementById('popSong').value : 'none';
 
     // determine mode
     // para-latin -> paragraphs with ~60% Latin
@@ -293,6 +292,9 @@ function generate() {
             break;
         case 'sentences-cheese':
             result = generateSentences(count, false);
+            break;
+        case 'pop-song':
+            result = generatePopSong(20);
             break;
         default:
             result = generateParagraphs(count);
@@ -389,21 +391,46 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generate').addEventListener('click', generate);
     document.getElementById('copy').addEventListener('click', copyToClipboard);
     document.getElementById('format').addEventListener('change', updateCountLabel);
-    const includeLatinEl = document.getElementById('includeLatin');
-    if (includeLatinEl) {
-        includeLatinEl.addEventListener('change', () => {
-            // regenerate immediately when the user toggles Latin inclusion
-            generate();
-        });
+    // ensure generate button label reflects selected format
+    function updateGenerateButtonLabel() {
+        const format = document.getElementById('format').value;
+        const gen = document.getElementById('generate');
+        switch (format) {
+            case 'para-latin': gen.textContent = 'Generate Paragraphs (Latin)'; break;
+            case 'para-cheese': gen.textContent = 'Generate Paragraphs (Cheese)'; break;
+            case 'sentences-cheese': gen.textContent = 'Generate Sentences'; break;
+            case 'pop-song': gen.textContent = 'Generate Pop Song'; break;
+            default: gen.textContent = 'Generate'; break;
+        }
     }
-    // wire the pop song generator button
-    const popBtn = document.getElementById('generatePopSong');
-    if (popBtn) {
-        popBtn.addEventListener('click', () => {
-            const outputBox = document.getElementById('output');
-            outputBox.textContent = generatePopSong(20); // 20 lines (~5 stanzas)
-        });
+
+    // show/hide count options depending on format
+    function updateCountOptionsVisibility() {
+        const format = document.getElementById('format').value;
+        const countOpts = document.getElementById('countOptions');
+        if (!countOpts) return;
+        if (format === 'pop-song') countOpts.style.display = 'none';
+        else countOpts.style.display = '';
     }
+
+    // read selected radio count
+    function getSelectedCount() {
+        const radios = document.getElementsByName('countOption');
+        for (const r of radios) {
+            if (r.checked) return parseInt(r.value, 10);
+        }
+        return 20;
+    }
+
+    // wire format change to update UI
+    document.getElementById('format').addEventListener('change', () => {
+        updateGenerateButtonLabel();
+        updateCountOptionsVisibility();
+    });
+
+    // initialize labels/visibility
+    updateGenerateButtonLabel();
+    updateCountOptionsVisibility();
     
     // Generate initial content
     generate();
