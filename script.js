@@ -320,6 +320,31 @@ function getSelectedCount() {
     return 10;
 }
 
+// Update the generate button label based on the selected mode
+function updateGenerateButtonLabel() {
+    const format = getSelectedFormat();
+    const gen = document.getElementById('generate');
+    switch (format) {
+        case 'para-latin': gen.textContent = 'Generate Paragraphs (Latin)'; break;
+        case 'para-cheese': gen.textContent = 'Generate Paragraphs (Cheese)'; break;
+        case 'sentences-cheese': gen.textContent = 'Generate Sentences'; break;
+        case 'pop-song': gen.textContent = 'Generate Pop Song'; break;
+        default: gen.textContent = 'Generate'; break;
+    }
+}
+
+// Update count radio visibility/disabled state depending on selected mode
+function updateCountOptionsVisibility() {
+    const format = getSelectedFormat();
+    const countOpts = document.getElementById('countOptions');
+    if (!countOpts) return;
+    const radios = document.getElementsByName('countOption');
+    const disabled = (format === 'pop-song');
+    for (const r of radios) r.disabled = disabled;
+    countOpts.style.opacity = disabled ? '0.5' : '';
+    countOpts.style.pointerEvents = disabled ? 'none' : '';
+}
+
 // Generate a random pop song built from popLines. Picks `linesCount` unique lines.
 function generatePopSong(linesCount = 50) {
     // shuffle copy of popLines
@@ -384,45 +409,11 @@ function showToast() {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+    // Wire buttons
     document.getElementById('generate').addEventListener('click', generate);
     document.getElementById('copy').addEventListener('click', copyToClipboard);
-    document.getElementById('format').addEventListener('change', updateCountLabel);
-    // ensure generate button label reflects selected format
-    function updateGenerateButtonLabel() {
-        const format = getSelectedFormat();
-        const gen = document.getElementById('generate');
-        switch (format) {
-            case 'para-latin': gen.textContent = 'Generate Paragraphs (Latin)'; break;
-            case 'para-cheese': gen.textContent = 'Generate Paragraphs (Cheese)'; break;
-            case 'sentences-cheese': gen.textContent = 'Generate Sentences'; break;
-            case 'pop-song': gen.textContent = 'Generate Pop Song'; break;
-            default: gen.textContent = 'Generate'; break;
-        }
-    }
 
-    // show/hide count options depending on format
-    function updateCountOptionsVisibility() {
-        const format = getSelectedFormat();
-        const countOpts = document.getElementById('countOptions');
-        if (!countOpts) return;
-        // For pop-song, grey out (disable) the radio options rather than hiding them
-        const radios = document.getElementsByName('countOption');
-        const disabled = (format === 'pop-song');
-        for (const r of radios) r.disabled = disabled;
-        countOpts.style.opacity = disabled ? '0.5' : '';
-        countOpts.style.pointerEvents = disabled ? 'none' : '';
-    }
-
-    // read selected radio count
-    function getSelectedCount() {
-        const radios = document.getElementsByName('countOption');
-        for (const r of radios) {
-            if (r.checked) return parseInt(r.value, 10);
-        }
-        return 20;
-    }
-
-    // wire mode radio changes to update UI
+    // Wire mode radio changes to update UI
     const modeRadios = document.getElementsByName('modeOption');
     for (const r of modeRadios) {
         r.addEventListener('change', () => {
@@ -431,10 +422,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // initialize labels/visibility
+    // Wire count radios to regenerate previews if needed (optional)
+    const countRadios = document.getElementsByName('countOption');
+    for (const r of countRadios) {
+        r.addEventListener('change', () => {
+            // no-op for pop-song (count radios are disabled), but regenerate content
+            generate();
+        });
+    }
+
+    // initialize labels/visibility and initial content
     updateGenerateButtonLabel();
     updateCountOptionsVisibility();
-    
-    // Generate initial content
     generate();
 });

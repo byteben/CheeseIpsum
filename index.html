@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <title>CheeseIpsum - Cheesy Lorem Ipsum Generator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -15,47 +17,50 @@
         </header>
 
         <main>
-            <div class="controls">
-                <div class="control-group" id="modeOptions">
-                    <span class="label">Mode:</span>
-                    <label style="margin-right:12px;"><input type="radio" name="modeOption" value="para-latin" checked>Paragraphs (Latin)</label>
-                    <label style="margin-right:12px;"><input type="radio" name="modeOption" value="para-cheese">Paragraphs (Cheese)</label>
-                    <label style="margin-right:12px;"><input type="radio" name="modeOption" value="sentences-cheese">Sentences (Cheese)</label>
-                    <label style="margin-right:12px;"><input type="radio" name="modeOption" value="pop-song">Pure Pop Cheese (Song)</label>
-                </div>
-
-                <div class="control-group" id="countOptions">
-                    <span class="label">Count:</span>
-                    <label style="margin-right:8px;"><input type="radio" name="countOption" value="5">5</label>
-                    <label style="margin-right:8px;"><input type="radio" name="countOption" value="10" checked>10</label>
-                    <label style="margin-right:8px;"><input type="radio" name="countOption" value="20">20</label>
-                    <label style="margin-right:8px;"><input type="radio" name="countOption" value="50">50</label>
-                    <label style="margin-right:8px;"><input type="radio" name="countOption" value="75">75</label>
-                    <label style="margin-right:8px;"><input type="radio" name="countOption" value="100">100</label>
-                    <label style="margin-right:8px;"><input type="radio" name="countOption" value="200">200</label>
-                </div>
-
-                <button id="generate" class="btn btn-primary">Generate</button>
-            </div>
-
-            <div class="output-section">
-                <div class="output-header">
-                    <h2>Generated Text</h2>
-                    <button id="copy" class="btn btn-secondary">Copy to Clipboard</button>
-                </div>
-                <div id="output" class="output-box">
-                    Click "Generate Cheese!" to create your cheesy text...
+            <div class="control-group" id="modeOptions">
+                <span class="label">Mode:</span>
+                <div>
+                    <label><input type="radio" name="modeOption" value="para-latin" checked> Paragraphs (Latin)</label>
+                    <label><input type="radio" name="modeOption" value="para-cheese"> Paragraphs (Cheese)</label>
+                    <label><input type="radio" name="modeOption" value="sentences-cheese"> Sentences (Cheese)</label>
+                    <label><input type="radio" name="modeOption" value="pop-song"> Pure Pop Cheese (Song)</label>
                 </div>
             </div>
-        </main>
 
-        <footer>
-            <p>Made with 🧀 for all your placeholder text needs</p>
-        </footer>
+            <div class="control-group" id="countOptions">
+                <span class="label">Count:</span>
+                <div>
+                    <label><input type="radio" name="countOption" value="5"> 5</label>
+                    <label><input type="radio" name="countOption" value="10" checked> 10</label>
+                    <label><input type="radio" name="countOption" value="20"> 20</label>
+                    <label><input type="radio" name="countOption" value="50"> 50</label>
+                    <label><input type="radio" name="countOption" value="75"> 75</label>
+                    <label><input type="radio" name="countOption" value="100"> 100</label>
+                    <label><input type="radio" name="countOption" value="200"> 200</label>
+                </div>
+            </div>
+            <button id="generate" class="btn btn-primary">Generate</button>
+    </div>
+
+    <div class="output-section">
+        <div class="output-header">
+            <h2>Generated Text</h2>
+            <button id="copy" class="btn btn-secondary">Copy to Clipboard</button>
+        </div>
+        <div id="output" class="output-box">
+            Click "Generate Cheese!" to create your cheesy text...
+        </div>
+    </div>
+    </main>
+
+    <footer>
+        <p>Made with 🧀 for all your placeholder text needs</p>
+    </footer>
     </div>
 
     <div id="toast" class="toast">Copied to clipboard!</div>
 
     <script src="script.js"></script>
 </body>
+
 </html>
