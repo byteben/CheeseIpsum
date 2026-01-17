@@ -72,7 +72,8 @@ function capitalize(str) {
 function getToken(type, includeLatin) {
     // type: 'cheeses' | 'adjectives' | 'verbs' | 'phrases' | 'connectors'
     if (type === 'connectors') {
-        if (includeLatin && Math.random() < 0.5) {
+        // make Latin connectors reasonably visible when enabled
+        if (includeLatin && Math.random() < 0.7) {
             return random(cheeseWords.latinConnectors);
         }
         return random(cheeseWords.connectors);
@@ -80,7 +81,8 @@ function getToken(type, includeLatin) {
 
     // For verbs, prefer Latin verbs when enabled (higher visibility)
     if (type === 'verbs') {
-        if (includeLatin && Math.random() < 0.6) {
+        // prefer Latin verbs more aggressively so lorem verbs show up
+        if (includeLatin && Math.random() < 0.8) {
             return random(cheeseWords.latinVerbs);
         }
         return random(cheeseWords.verbs);
@@ -88,14 +90,16 @@ function getToken(type, includeLatin) {
 
     // For phrases, allow full Latin phrases when enabled
     if (type === 'phrases') {
-        if (includeLatin && Math.random() < 0.6) {
+        // make Latin phrases highly likely when enabled so they're obvious
+        if (includeLatin && Math.random() < 0.9) {
             return random(cheeseWords.latinPhrases);
         }
         return random(cheeseWords.phrases);
     }
 
     // For other types, occasionally return a Latin word when enabled
-    if (includeLatin && Math.random() < 0.25) {
+    // for adjectives/cheeses etc, use Latin occasionally but with a higher rate
+    if (includeLatin && Math.random() < 0.4) {
         return random(cheeseWords.latin);
     }
 
