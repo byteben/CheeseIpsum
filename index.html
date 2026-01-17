@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheese Ipsum - The Cheesiest Lorem Ipsum Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 50%, #e17055 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #e17055;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .cheese-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header p {
+            color: #636e72;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #2d3436;
+            font-size: 1rem;
+        }
+
+        .control-group input {
+            padding: 12px 20px;
+            border: 2px solid #fdcb6e;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 100px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .control-group input:focus {
+            outline: none;
+            border-color: #e17055;
+            box-shadow: 0 0 0 3px rgba(225, 112, 85, 0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(225, 112, 85, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(225, 112, 85, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .output-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 300px;
+            position: relative;
+            border: 2px solid #fdcb6e;
+        }
+
+        .output {
+            color: #2d3436;
+            line-height: 1.8;
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        .output p {
+            margin-bottom: 20px;
+        }
+
+        .output p:last-child {
+            margin-bottom: 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 16px;
+            background: #74b9ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(116, 185, 255, 0.4);
+        }
+
+        .copy-btn:hover {
+            background: #0984e3;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: #00b894;
+        }
+
+        .placeholder {
+            color: #b2bec3;
+            font-style: italic;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #e17055;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .cheese-icon {
+                font-size: 3rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .control-group {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .copy-btn {
+                position: static;
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="cheese-icon">🧀</div>
+            <h1>Cheese Ipsum</h1>
+            <p>The world's cheesiest placeholder text generator</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="paragraphs">Paragraphs:</label>
+                <input type="number" id="paragraphs" min="1" max="20" value="3">
+            </div>
+            <button class="btn" onclick="generateCheese()">Generate Cheese 🧀</button>
+        </div>
+
+        <div class="output-container">
+            <button class="copy-btn" onclick="copyToClipboard()">Copy Text</button>
+            <div class="output" id="output">
+                <div class="placeholder">Click "Generate Cheese" to create your cheesy placeholder text!</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Made with ❤️ and 🧀 | Perfect for designers, developers, and cheese lovers</p>
+        </div>
+    </div>
+
+    <script>
+        let cheeseWords = null;
+
+        // Load cheese words from JSON
+        fetch('cheese-words.json')
+            .then(response => response.json())
+            .then(data => {
+                cheeseWords = data;
+            })
+            .catch(error => {
+                console.error('Error loading cheese words:', error);
+                // Fallback data
+                cheeseWords = {
+                    cheeses: ['cheddar', 'brie', 'gouda', 'mozzarella', 'parmesan'],
+                    adjectives: ['aged', 'sharp', 'mild', 'creamy', 'crumbly'],
+                    verbs: ['melts', 'ages', 'ripens', 'crumbles', 'spreads'],
+                    nouns: ['rind', 'wheel', 'wedge', 'block', 'slice'],
+                    connectors: ['and', 'with', 'through', 'among', 'between'],
+                    sentence_starters: ['The', 'A', 'Every', 'Each', 'Some']
+                };
+            });
+
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function generateSentence() {
+            if (!cheeseWords) return '';
+
+            const patterns = [
+                // Pattern 1: Starter + adjective + cheese + verb + noun
+                () => {
+                    const starter = getRandomElement(cheeseWords.sentence_starters);
+                    const adj = getRandomElement(cheeseWords.adjectives);
+                    const cheese = getRandomElement(cheeseWords.cheeses);
+                    const verb = getRandomElement(cheeseWords.verbs);
+                    const connector = getRandomElement(cheeseWords.connectors);
+                    const noun = getRandomElement(cheeseWords.nouns);
+                    return `${starter} ${adj} ${cheese} ${verb} ${connector} the ${noun}`;
+                },
+                // Pattern 2: Starter + cheese + verb + adjective + noun
+                () => {
+                    const starter = getRandomElement(cheeseWords.sentence_starters);
+                    const cheese = getRandomElement(cheeseWords.cheeses);
+                    const verb = getRandomElement(cheeseWords.verbs);
+                    const connector = getRandomElement(cheeseWords.connectors);
+                    const adj1 = getRandomElement(cheeseWords.adjectives);
+                    const adj2 = getRandomElement(cheeseWords.adjectives);
+                    const noun = getRandomElement(cheeseWords.nouns);
+                    return `${starter} ${cheese} ${verb} ${connector} ${adj1} ${connector} ${adj2} ${noun}`;
+                },
+                // Pattern 3: Adjective + cheese + connector + adjective + cheese
+                () => {
+                    const adj1 = getRandomElement(cheeseWords.adjectives);
+                    const cheese1 = getRandomElement(cheeseWords.cheeses);
+                    const connector = getRandomElement(cheeseWords.connectors);
+                    const adj2 = getRandomElement(cheeseWords.adjectives);
+                    const cheese2 = getRandomElement(cheeseWords.cheeses);
+                    const verb = getRandomElement(cheeseWords.verbs);
+                    return `${capitalize(adj1)} ${cheese1} ${connector} ${adj2} ${cheese2} ${verb} beautifully`;
+                },
+                // Pattern 4: Complex sentence with multiple elements
+                () => {
+                    const starter = getRandomElement(cheeseWords.sentence_starters);
+                    const adj = getRandomElement(cheeseWords.adjectives);
+                    const noun = getRandomElement(cheeseWords.nouns);
+                    const verb = getRandomElement(cheeseWords.verbs);
+                    const cheese = getRandomElement(cheeseWords.cheeses);
+                    const connector = getRandomElement(cheeseWords.connectors);
+                    return `${starter} ${adj} ${noun} ${verb} ${connector} ${cheese}, creating delightful complexity`;
+                },
+                // Pattern 5: Simple declarative
+                () => {
+                    const cheese1 = getRandomElement(cheeseWords.cheeses);
+                    const adj = getRandomElement(cheeseWords.adjectives);
+                    const noun = getRandomElement(cheeseWords.nouns);
+                    const cheese2 = getRandomElement(cheeseWords.cheeses);
+                    return `${capitalize(cheese1)} brings ${adj} notes to every ${noun}, much like ${cheese2}`;
+                }
+            ];
+
+            const pattern = getRandomElement(patterns);
+            return pattern();
+        }
+
+        function generateParagraph() {
+            const sentenceCount = Math.floor(Math.random() * 4) + 4; // 4-7 sentences
+            let sentences = [];
+
+            for (let i = 0; i < sentenceCount; i++) {
+                sentences.push(generateSentence());
+            }
+
+            return sentences.join('. ') + '.';
+        }
+
+        function generateCheese() {
+            if (!cheeseWords) {
+                alert('Loading cheese database... Please try again in a moment.');
+                return;
+            }
+
+            const paragraphCount = parseInt(document.getElementById('paragraphs').value) || 3;
+            const output = document.getElementById('output');
+            
+            let paragraphs = [];
+            for (let i = 0; i < paragraphCount; i++) {
+                paragraphs.push(`<p>${generateParagraph()}</p>`);
+            }
+
+            output.innerHTML = paragraphs.join('');
+            
+            // Reset copy button
+            const copyBtn = document.querySelector('.copy-btn');
+            copyBtn.textContent = 'Copy Text';
+            copyBtn.classList.remove('copied');
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            const text = output.innerText;
+
+            if (text && !text.includes('Click "Generate Cheese"')) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.querySelector('.copy-btn');
+                    btn.textContent = 'Copied! ✓';
+                    btn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        btn.textContent = 'Copy Text';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    alert('Failed to copy text to clipboard');
+                });
+            }
+        }
+
+        // Allow Enter key to generate
+        document.getElementById('paragraphs').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateCheese();
+            }
+        });
+
+        // Generate initial content on load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (cheeseWords) {
+                    generateCheese();
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

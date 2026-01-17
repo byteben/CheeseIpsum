@@ -1,0 +1,36 @@
+{
+  "cheeses": [
+    "cheddar", "brie", "gouda", "mozzarella", "parmesan", "roquefort", "camembert", "feta",
+    "gruyere", "manchego", "stilton", "gorgonzola", "provolone", "ricotta", "asiago", "fontina",
+    "havarti", "muenster", "colby", "monterey", "pepper jack", "swiss", "edam", "emmental",
+    "pecorino", "boursin", "goat cheese", "blue cheese", "cream cheese", "cottage cheese",
+    "mascarpone", "paneer", "halloumi", "queso", "limburger", "taleggio", "raclette", "burrata"
+  ],
+  "adjectives": [
+    "aged", "sharp", "mild", "creamy", "crumbly", "tangy", "pungent", "smooth", "rich",
+    "nutty", "savory", "aromatic", "bold", "delicate", "robust", "fresh", "matured",
+    "ripened", "soft", "hard", "semi-soft", "semi-hard", "spreadable", "melted", "sliced",
+    "grated", "shredded", "artisan", "farmhouse", "vintage", "smoked", "herb-crusted",
+    "blue-veined", "washed-rind", "cave-aged", "handcrafted", "cultured", "pressed"
+  ],
+  "verbs": [
+    "melts", "ages", "ripens", "crumbles", "spreads", "pairs", "mingles", "blends",
+    "complements", "enhances", "infuses", "develops", "matures", "ferments", "cultures",
+    "coagulates", "curdles", "separates", "solidifies", "transforms", "enriches", "balances"
+  ],
+  "nouns": [
+    "rind", "wheel", "wedge", "block", "slice", "chunk", "morsel", "bite", "taste", "flavor",
+    "aroma", "texture", "culture", "mold", "bacteria", "rennet", "curd", "whey", "milk",
+    "cream", "paste", "cave", "cellar", "board", "platter", "pairing", "tasting", "selection",
+    "variety", "tradition", "craft", "process", "technique", "method", "recipe", "origin",
+    "region", "terroir", "producer", "maker", "monger", "connoisseur", "aficionado"
+  ],
+  "connectors": [
+    "and", "with", "through", "among", "between", "within", "alongside", "throughout",
+    "amid", "via", "across", "beyond", "beneath", "upon", "into", "onto", "from"
+  ],
+  "sentence_starters": [
+    "The", "A", "Every", "Each", "Some", "Many", "Few", "Several", "Various", "Numerous",
+    "Multiple", "Certain", "Particular", "Specific", "Distinctive", "Unique", "Special"
+  ]
+}
