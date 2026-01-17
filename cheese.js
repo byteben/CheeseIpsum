@@ -8,6 +8,8 @@
  *   - 1..50 paragraph count (disabled in song mode)
  */
 
+let cheeseWords = null;
+
 async function loadCheeseWords() {
   // cache: 'no-store'
   const res = await fetch('./cheese.json', { cache: 'no-store' });
@@ -19,10 +21,6 @@ async function loadCheeseWords() {
 
 const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
-function ensureWordsLoaded() {
-  if (!cheeseWords) throw new Error('cheeseWords not loaded yet');
-}
 
 function getToken(type, includeLatin, forceLatin = false) {
   if (forceLatin) {
