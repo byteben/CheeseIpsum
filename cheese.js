@@ -145,6 +145,14 @@ const sentenceTemplates = [
     ['This', 'adjectives', 'cheeses', 'verbs', 'wonderfully', 'phrases']
 ];
 
+const longListTemplates = [
+    ['cheeses','cheeses','cheeses','cheeses','cheeses','cheeses'],
+    ['cheeses','connectors','cheeses','connectors','cheeses','connectors','cheeses'],
+    ['adjectives','cheeses','adjectives','cheeses','cheeses','verbs','phrases'],
+    ['cheeses','cheeses','cheeses','adjectives','cheeses','phrases']
+];
+
+
 function generateSentence(includeLatin) {
     const t = random(sentenceTemplates);
     const out = [];
@@ -161,37 +169,39 @@ function generateSentence(includeLatin) {
     return out.join(' ') + '.';
 }
 
+function generateListSentence(includeLatin) {
+    const t = random(longListTemplates);
+    const parts = [];
+
+    for (const token of t) {
+        if (['adjectives','cheeses','verbs','phrases','connectors'].includes(token)) {
+            parts.push(getToken(token, includeLatin));
+        } else {
+            parts.push(token);
+        }
+    }
+
+    const cleaned = parts.map(p => p.replace(/\.$/, ''));
+
+    if (cleaned.length > 2) {
+        const last = cleaned.pop();
+        return cap(`${cleaned.join(', ')}, ${last}.`);
+    }
+
+    return cap(cleaned.join(', ') + '.');
+}
+
 function generateParagraph(includeLatin) {
-    const sentenceCount = Math.floor(Math.random() * 4) + 3; // 3–6
-
-    // Pre-pick templates so we can “force” ~60% Latin token slots deterministically
-    const chosen = Array.from({ length: sentenceCount }, () => random(sentenceTemplates));
-
-    const variableTypes = new Set(['adjectives', 'cheeses', 'verbs', 'phrases', 'connectors']);
-    let totalSlots = 0;
-    for (const t of chosen) for (const token of t) if (variableTypes.has(token)) totalSlots++;
-
-    const requiredLatin = includeLatin ? Math.round(totalSlots * 0.6) : 0;
-
-    const forcedSlots = new Set();
-    while (forcedSlots.size < requiredLatin) forcedSlots.add(Math.floor(Math.random() * totalSlots));
+    const sentenceCount = Math.floor(Math.random() * 5) + 5; // ✅ 5–9 sentences
 
     const sentences = [];
-    let slotIndex = 0;
-
-    for (const t of chosen) {
-        const parts = [];
-        for (const token of t) {
-            if (variableTypes.has(token)) {
-                const forceLatin = forcedSlots.has(slotIndex);
-                parts.push(getToken(token, includeLatin, forceLatin));
-                slotIndex++;
-            } else {
-                parts.push(token);
-            }
+    for (let i = 0; i < sentenceCount; i++) {
+        // ~40% chance of a long list sentence (Bacon Ipsum feel)
+        if (Math.random() < 0.4) {
+            sentences.push(generateListSentence(includeLatin));
+        } else {
+            sentences.push(generateSentence(includeLatin));
         }
-        parts[0] = cap(parts[0]);
-        sentences.push(parts.join(' ') + '.');
     }
 
     return sentences.join(' ');
