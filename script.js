@@ -39,6 +39,22 @@ const cheeseWords = {
     ],
     latinConnectors: [
         'et', 'cum', 'etiam', 'quoque', 'sed', 'autem', 'nam', 'si'
+    ],
+    // Richer Latin verbs commonly seen in lorem ipsum
+    latinVerbs: [
+        'incididunt', 'labore', 'dolore', 'veniam', 'exercitation', 'ullamco',
+        'laboris', 'velit', 'quis', 'excepteur', 'sint', 'occaecat', 'minim',
+        'reprehenderit', 'consequat'
+    ],
+    // Common lorem ipsum phrases to make Latin visible
+    latinPhrases: [
+        'lorem ipsum dolor sit amet',
+        'consectetur adipiscing elit',
+        'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        'ut enim ad minim veniam',
+        'quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat',
+        'duis aute irure dolor in reprehenderit',
+        'in voluptate velit esse cillum dolore eu fugiat nulla pariatur'
     ]
 };
 
@@ -60,6 +76,22 @@ function getToken(type, includeLatin) {
             return random(cheeseWords.latinConnectors);
         }
         return random(cheeseWords.connectors);
+    }
+
+    // For verbs, prefer Latin verbs when enabled (higher visibility)
+    if (type === 'verbs') {
+        if (includeLatin && Math.random() < 0.6) {
+            return random(cheeseWords.latinVerbs);
+        }
+        return random(cheeseWords.verbs);
+    }
+
+    // For phrases, allow full Latin phrases when enabled
+    if (type === 'phrases') {
+        if (includeLatin && Math.random() < 0.6) {
+            return random(cheeseWords.latinPhrases);
+        }
+        return random(cheeseWords.phrases);
     }
 
     // For other types, occasionally return a Latin word when enabled
