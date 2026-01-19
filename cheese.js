@@ -12,7 +12,7 @@ let cheeseWords = null;
 
 async function loadCheeseWords() {
   // cache: 'no-store'
-  const res = await fetch('./cheese.json', { cache: 'no-store' });
+  const res = await fetch('cheese.json', { cache: 'no-store' });
   if (!res.ok) throw new Error(`Failed to load cheese.json (${res.status})`);
   cheeseWords = await res.json();
 }
